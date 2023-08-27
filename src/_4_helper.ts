@@ -1,6 +1,3 @@
-// import { NAMED_RANGES } from "./constants";
-// import { getDateAsIsoDateString_ } from "./date.helper";
-
 const App = SpreadsheetApp;
 const SpreadSheet = App.getActiveSpreadsheet();
 const Sheet = SpreadSheet.getActiveSheet();
@@ -16,6 +13,9 @@ const AccountsTableDescription = SpreadSheet.getRangeByName(
 ) as GoogleAppsScript.Spreadsheet.Range;
 const AccountsTableFrequency = SpreadSheet.getRangeByName(
   NAMED_RANGES.ACCOUNTS_TABLE.FREQUENCY
+) as GoogleAppsScript.Spreadsheet.Range;
+const AccountsTableDaysInterval = SpreadSheet.getRangeByName(
+  NAMED_RANGES.ACCOUNTS_TABLE.DAYS_INTERVAL
 ) as GoogleAppsScript.Spreadsheet.Range;
 
 type JSRange = Array<Array<any>>;
