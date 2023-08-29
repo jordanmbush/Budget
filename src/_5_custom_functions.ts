@@ -1,9 +1,18 @@
 /**
  * @param {string} date
  * @param {string} description
+ * @returns {number}
  * @customFunction
  */
-function GET_BUDGET_ITEM(date: string, description: string) {
+function GET_BUDGET_ITEM(date: string, ...descriptions: string[]): number {
+  if (descriptions.length > 1) {
+    return descriptions.reduce((total, description) => {
+      return total + GET_BUDGET_ITEM(date, description);
+    }, 0);
+  }
+
+  const description = descriptions[0];
+
   if (!isValidDescription(description)) {
     throw new Error(`Invalid description ${description} used.`);
   }
@@ -38,10 +47,30 @@ function GET_DAILY_EXPENSES(date: string) {
   const amount = AccountsTableDescription.getValues().reduce((totalExpenses, row) => {
     return (
       row.reduce((subTotal, description) => {
-        if (description === "Income") {
+        if (!description || description.toLowerCase().includes("income")) {
           return 0;
         }
         return subTotal + GET_BUDGET_ITEM(date, description);
+      }, 0) + totalExpenses
+    );
+  }, 0);
+
+  return amount;
+}
+
+/**
+ * @param {string} date
+ * @customFunction
+ */
+function GET_INCOME_FOR_DAY(date: string) {
+  const amount = AccountsTableDescription.getValues().reduce((totalExpenses, row) => {
+    return (
+      row.reduce((subTotal, description) => {
+        if (description.toLowerCase().includes("income")) {
+          return subTotal + GET_BUDGET_ITEM(date, description);
+        }
+
+        return 0;
       }, 0) + totalExpenses
     );
   }, 0);
