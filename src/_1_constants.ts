@@ -4,6 +4,7 @@ const NAMED_RANGES = {
     DATE: "AccountsTableDate",
     DAYS_INTERVAL: "AccountsTableDaysInterval",
     DESCRIPTION: "AccountsTableDescription",
+    ENTIRE_TABLE: "AccountsTable",
     FREQUENCY: "AccountsTableFrequency",
   },
 };

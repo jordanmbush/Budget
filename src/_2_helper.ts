@@ -2,6 +2,9 @@ const App = SpreadsheetApp;
 const SpreadSheet = App.getActiveSpreadsheet();
 const Sheet = SpreadSheet.getActiveSheet();
 
+const AccountsTableRange = SpreadSheet.getRangeByName(
+  NAMED_RANGES.ACCOUNTS_TABLE.ENTIRE_TABLE
+) as GoogleAppsScript.Spreadsheet.Range;
 const AccountsTableAmount = SpreadSheet.getRangeByName(
   NAMED_RANGES.ACCOUNTS_TABLE.AMOUNT
 ) as GoogleAppsScript.Spreadsheet.Range;
@@ -36,21 +39,25 @@ const isValidDescription = (description: string) => {
 };
 
 const FREQUENCY_TYPE = {
-  WEEKLY: "WEEKLY",
-  "BI-WEEKLY": "BI-WEEKLY",
+  ANNUALLY: "ANNUALLY",
+  BI_MONTHLY: "BI-MONTHLY",
+  BI_WEEKLY: "BI-WEEKLY",
+  DAYS: "DAYS",
+  LAST_DAY_OF_MONTH: "LAST-DAY-OF-MONTH",
   MONTHLY: "MONTHLY",
-  ANUALLY: "ANUALLY",
+  QUARTERLY: "QUARTERLY",
+  WEEKLY: "WEEKLY",
 };
 
 const FREQUENCY_MAP = {
   [FREQUENCY_TYPE.WEEKLY]: 7,
-  [FREQUENCY_TYPE["BI-WEEKLY"]]: 14,
+  [FREQUENCY_TYPE.BI_WEEKLY]: 14,
   [FREQUENCY_TYPE.MONTHLY]: (input: string, check: string) => {
     const inputDate = new Date(input);
     const checkDate = new Date(check);
     return inputDate.getMonth() === checkDate.getMonth();
   },
-  [FREQUENCY_TYPE.ANUALLY]: (input: string, check: string) => {
+  [FREQUENCY_TYPE.ANNUALLY]: (input: string, check: string) => {
     const inputDate = new Date(input);
     const checkDate = new Date(check);
     return (
