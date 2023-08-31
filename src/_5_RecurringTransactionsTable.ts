@@ -20,32 +20,32 @@ type AccountRecord = {
 };
 
 /**
- * @returns {AccountTable}
+ * @returns {RecurringTransactionsTable}
  */
-class AccountTable {
+class RecurringTransactionsTable {
   tableData: AccountTableData;
 
   constructor() {
-    this.tableData = AccountTable.getAccountsTableData();
+    this.tableData = RecurringTransactionsTable.getTableData();
   }
 
-  static getAccountsTableData() {
-    const tableData: AccountTableData = AccountsTableRange.getValues() as AccountTableData;
+  static getTableData() {
+    const tableData: AccountTableData = RecurringTransactionsRange.getValues() as AccountTableData;
     return tableData;
   }
 
-  getAccountRecordIndex(description: string) {
-    const descriptions = this.getDataByColumn("description");
+  getTransactionRecordIndex(description: string) {
+    const descriptions = this.getTransactionsColumnData("description");
     return descriptions.indexOf(description);
   }
 
-  getRecordDataByIndex(index: number) {
+  geTransactionDataByIndex(index: number) {
     const recordRow = this.tableData[index];
     const [description, amount, frequency, date, days] = recordRow;
     return { amount, date, days, description, frequency } as AccountRecord;
   }
 
-  getDataByColumn(columnName: ColumnKey) {
+  getTransactionsColumnData(columnName: ColumnKey) {
     return this.tableData.map((row) => {
       const columnIndex = ColumnKeys.indexOf(columnName);
       const columnCell = row[columnIndex];
@@ -57,3 +57,5 @@ class AccountTable {
     return range.getNumColumns() === 1 && range.getNumRows() === 1;
   }
 }
+
+const RecurringTransactionsTableInstance = new RecurringTransactionsTable();

@@ -17,9 +17,10 @@ function GET_BUDGET_ITEM(inputDate: string, ...descriptions: string[]): number {
     throw new Error(`Invalid description ${inputDescription} used.`);
   }
 
-  const accountTable = new AccountTable();
-  const accountRowIndex = accountTable.getAccountRecordIndex(inputDescription);
-  const { amount, date, days, frequency } = accountTable.getRecordDataByIndex(accountRowIndex);
+  const accountRowIndex =
+    RecurringTransactionsTableInstance.getTransactionRecordIndex(inputDescription);
+  const { amount, date, days, frequency } =
+    RecurringTransactionsTableInstance.geTransactionDataByIndex(accountRowIndex);
 
   return isDateInFrequency(inputDate, frequency, date, days) ? amount : 0;
 }
@@ -29,16 +30,20 @@ function GET_BUDGET_ITEM(inputDate: string, ...descriptions: string[]): number {
  * @customFunction
  */
 function GET_DAILY_EXPENSES(inputDate: string) {
-  const accountTable = new AccountTable();
-  const descriptions = accountTable.getDataByColumn("description") as string[];
+  const descriptions = RecurringTransactionsTableInstance.getTransactionsColumnData(
+    "description"
+  ) as string[];
+  const notes: string[] = [];
   const amount = descriptions.reduce((totalExpenses, description) => {
     if (!description || description.toLowerCase().includes("income")) {
       return totalExpenses;
     }
-    return totalExpenses + GET_BUDGET_ITEM(inputDate, description);
+    const expenseAmount = GET_BUDGET_ITEM(inputDate, description);
+    expenseAmount !== 0 && notes.push(`${description}: ${currencyFormatter.format(expenseAmount)}`);
+    return totalExpenses + expenseAmount;
   }, 0);
 
-  return amount;
+  return { amount, note: notes.join("\n") };
 }
 
 /**
@@ -46,14 +51,18 @@ function GET_DAILY_EXPENSES(inputDate: string) {
  * @customFunction
  */
 function GET_INCOME_FOR_DAY(inputDate: string) {
-  const accountTable = new AccountTable();
-  const descriptions = accountTable.getDataByColumn("description") as string[];
+  const descriptions = RecurringTransactionsTableInstance.getTransactionsColumnData(
+    "description"
+  ) as string[];
+  const notes: string[] = [];
   const amount = descriptions.reduce((totalExpenses, description) => {
     if (description && description.toLowerCase().includes("income")) {
-      return totalExpenses + GET_BUDGET_ITEM(inputDate, description);
+      const incomeAmount = GET_BUDGET_ITEM(inputDate, description);
+      incomeAmount !== 0 && notes.push(`${description}: ${currencyFormatter.format(incomeAmount)}`);
+      return totalExpenses + incomeAmount;
     }
     return totalExpenses;
   }, 0);
 
-  return amount;
+  return { amount, note: notes.join("\n") };
 }

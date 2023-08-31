@@ -12,7 +12,7 @@ const getDiffInDays = (date1: Date, date2: Date) =>
 
 function isDateInFrequency(
   dateStr: string,
-  frequency: string,
+  frequency: Frequency,
   checkDateStr: string,
   interval?: number
 ) {
@@ -24,36 +24,36 @@ function isDateInFrequency(
   const checkDate = new Date(checkDateStr);
 
   switch (frequency) {
-    case "DAYS":
+    case FREQUENCY_TYPE.DAYS:
       return getDiffInDays(date, checkDate) % Number(interval) === 0;
 
-    case "WEEKLY":
+    case FREQUENCY_TYPE.WEEKLY:
       return date.getDay() === checkDate.getDay();
 
-    case "BI-WEEKLY":
+    case FREQUENCY_TYPE.BI_WEEKLY:
       return getDiffInDays(date, checkDate) % 14 === 0;
 
-    case "BI-MONTHLY":
+    case FREQUENCY_TYPE.BI_MONTHLY:
       return (
         date.getDate() === checkDate.getDate() && date.getMonth() % 2 === checkDate.getMonth() % 2
       );
 
-    case "MONTHLY":
+    case FREQUENCY_TYPE.MONTHLY:
       return date.getDate() === checkDate.getDate();
 
-    case "QUARTERLY":
+    case FREQUENCY_TYPE.QUARTERLY:
       return (
         date.getDate() === checkDate.getDate() &&
         Math.abs(date.getMonth() - checkDate.getMonth()) % 3 === 0
       );
 
-    case "ANNUALLY":
+    case FREQUENCY_TYPE.ANNUALLY:
       return (
         getDateAsIsoDateString_(date).substring(0, 7) ===
         getDateAsIsoDateString_(checkDate).substring(0, 7)
       );
 
-    case "LAST-DAY-OF-MONTH":
+    case FREQUENCY_TYPE.LAST_DAY_OF_MONTH:
       const nextDay = new Date(dateStr);
       nextDay.setDate(nextDay.getDate() + 1);
 
