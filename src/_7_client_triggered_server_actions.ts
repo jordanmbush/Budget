@@ -1,11 +1,16 @@
 const calculateExpensesForActiveRange = () => {
-  const a1Notation = SpreadSheet.getActiveRange()?.getA1Notation();
-  const dateRange = SpreadSheet.getRangeByName(NAMED_RANGES.DATE_COLUMN);
-  const billRange = SpreadSheet.getActiveRange();
+  const activeRange = SpreadSheet.getActiveRange();
+  const billsRangeRowOffset = BillsRange.getRow();
 
-  const datesForSelectedExpenseRows = billRange?.offset(
-    0,
-    (dateRange?.getColumn() || 0) - (billRange.getColumn() || 0)
+  if (!activeRange) {
+    return "Range not selected";
+  }
+
+  const datesForSelectedExpenseRows = ActiveSheet.getRange(
+    activeRange?.getRow(),
+    DateRange?.getColumn(),
+    BillsRange.getNumRows() - activeRange.getRow() + billsRangeRowOffset,
+    BillsRange.getNumColumns()
   );
 
   try {
@@ -13,20 +18,19 @@ const calculateExpensesForActiveRange = () => {
       return GET_DAILY_EXPENSES(date);
     });
 
-    const expenseValues = expenseData?.map((data) => {
-      return [data.amount];
-    });
-    const notes = expenseData?.map((data) => {
-      return [data.note];
-    });
+    const billsRange = ActiveSheet.getRange(
+      datesForSelectedExpenseRows.getRow(),
+      BillsRange.getColumn(),
+      datesForSelectedExpenseRows.getNumRows(),
+      BillsRange.getNumColumns()
+    );
+    billsRange.setValues(expenseData);
 
-    billRange?.setValues(expenseValues || []);
-    billRange?.setNotes(notes || []);
+    ActiveSheet.setActiveRange(billsRange);
+    return billsRange.getA1Notation();
   } catch (error) {
     return (error as Error).message;
   }
-
-  return a1Notation;
 };
 
 const calculateIncomeForActiveRange = () => {

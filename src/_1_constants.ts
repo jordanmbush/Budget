@@ -8,7 +8,7 @@ const NAMED_RANGES = {
     FREQUENCY: "TABLE_FREQUENCY",
   },
   BALANCE_COLUMN: "Balance",
-  BILLS_COLUMN: "Bills",
+  BILLS: "Bills",
   DATE_COLUMN: "Date",
   INCOME_COLUMN: "Income",
 };
@@ -27,6 +27,10 @@ const FREQUENCY_TYPE = {
   MONTHLY: "MONTHLY",
   QUARTERLY: "QUARTERLY",
   WEEKLY: "WEEKLY",
+};
+
+const PATTERNS = {
+  INCOME_DESCRIPTION: /income/gi,
 };
 
 const FREQUENCY_MAP = {

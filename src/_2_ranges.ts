@@ -22,3 +22,9 @@ const TableFrequencyRange = SpreadSheet.getRangeByName(
 const TableDaysIntervalRange = SpreadSheet.getRangeByName(
   NAMED_RANGES.RECURRING_TRANSACTIONS_TABLE.DAYS_INTERVAL
 ) as GoogleAppsScript.Spreadsheet.Range;
+const BillsRange = SpreadSheet.getRangeByName(
+  NAMED_RANGES.BILLS
+) as GoogleAppsScript.Spreadsheet.Range;
+const DateRange = SpreadSheet.getRangeByName(
+  NAMED_RANGES.DATE_COLUMN
+) as GoogleAppsScript.Spreadsheet.Range;

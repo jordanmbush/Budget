@@ -33,17 +33,22 @@ function GET_DAILY_EXPENSES(inputDate: string) {
   const descriptions = RecurringTransactionsTableInstance.getTransactionsColumnData(
     "description"
   ) as string[];
-  const notes: string[] = [];
-  const amount = descriptions.reduce((totalExpenses, description) => {
-    if (!description || description.toLowerCase().includes("income")) {
+
+  const expensesForDay = descriptions.reduce<(string | number)[]>((totalExpenses, description) => {
+    if (!description || PATTERNS.INCOME_DESCRIPTION.test(description)) {
       return totalExpenses;
     }
     const expenseAmount = GET_BUDGET_ITEM(inputDate, description);
-    expenseAmount !== 0 && notes.push(`${description}: ${currencyFormatter.format(expenseAmount)}`);
-    return totalExpenses + expenseAmount;
-  }, 0);
+    if (expenseAmount !== 0) {
+      const expense = [description, expenseAmount];
+      return [...totalExpenses, ...expense];
+    }
 
-  return { amount, note: notes.join("\n") };
+    return totalExpenses;
+  }, []);
+
+  expensesForDay.length = BillsRange.getNumColumns();
+  return Array.from(expensesForDay, (value) => value ?? "");
 }
 
 /**
